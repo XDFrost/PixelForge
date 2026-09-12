@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(npm install *)",
+      "Bash(node -e \"import\\('vite'\\).then\\(v=>console.log\\('vite ok', v.version\\)\\).catch\\(e=>{console.error\\('vite FAIL', e.message\\);process.exit\\(1\\)}\\)\")",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(npx --yes shadcn@latest add button slider tooltip toggle-group separator card kbd --yes --overwrite)",
+      "Bash(node -e \"import\\('vite'\\).then\\(v=>console.log\\('vite ok', v.version\\)\\).catch\\(e=>{console.error\\('vite FAIL', e.message.split\\('\\\\n'\\)[0]\\);process.exit\\(1\\)}\\)\")",
+      "Bash(node -e \"import\\('vite'\\).then\\(v=>console.log\\('vite ok', v.version\\)\\)\")",
+      "Bash(node -e \"import\\('eslint-plugin-react-hooks'\\).then\\(m=>{const p=m.default??m;console.log\\('version', p.meta?.version\\); console.log\\('configs keys:', Object.keys\\(p.configs||{}\\)\\); console.log\\('flat:', p.configs?.flat && Object.keys\\(p.configs.flat\\)\\)}\\)\")",
+      "Bash(node -e \"import\\('eslint-plugin-react-refresh'\\).then\\(m=>{const p=m.default??m;console.log\\('refresh configs:', Object.keys\\(p.configs||{}\\)\\)}\\)\")",
+      "Bash(npx vite *)",
+      "Bash(BENCH=1 npx vitest run bench)",
+      "Bash(BENCH=1 npx vitest run)",
+      "Bash(npx esbuild *)",
+      "Bash(node /private/tmp/claude-502/-Users-pratham-gupta-Desktop-PixelForge/335e7224-3189-4f35-a473-49b55e906c2c/scratchpad/bench.mjs)",
+      "Bash(node --cpu-prof --cpu-prof-dir=/private/tmp/claude-502/-Users-pratham-gupta-Desktop-PixelForge/335e7224-3189-4f35-a473-49b55e906c2c/scratchpad/prof /private/tmp/claude-502/-Users-pratham-gupta-Desktop-PixelForge/335e7224-3189-4f35-a473-49b55e906c2c/scratchpad/bench.mjs)",
+      "Bash(node -e ' *)",
+      "Bash(npm run *)",
+      "Bash(set -e)",
+      "Bash(perl -0pi -e 's/  aLife\\\\?: number;\\\\n  bLife\\\\?: number;\\\\n\\\\}/  aLife?: number;\\\\n  bLife?: number;\\\\n  \\\\/** Chance 0..1 that side a \\\\/ b actually converts once the row fires \\(default 1\\). *\\\\/\\\\n  aChance?: number;\\\\n  bChance?: number;\\\\n}/' src/features/simulation/types.ts)",
+      "Bash(perl -0pi -e 's/\\(  \\\\/\\\\*\\\\* Liquids: chance 0..1 to skip lateral movement this tick. \\\\*\\\\/\\\\n  viscosity\\\\?: number;\\\\n\\)/$1  \\\\/**\\\\n   * Powders: chance 0..1 to stay put instead of sliding diagonally when blocked below.\\\\n   * Slows slumping; the final rest angle is still 45°.\\\\n   *\\\\/\\\\n  friction?: number;\\\\n/' src/features/simulation/types.ts)",
+      "Bash(perl -0pi -e 's/\\(  readonly viscosity: Float32Array;\\\\n\\)/$1  readonly friction: Float32Array;\\\\n/' src/features/simulation/types.ts)",
+      "Bash(perl -0pi -e 's/  const viscosity = new Float32Array\\\\\\(MAX_ELEMENTS\\\\\\);\\\\n/  const viscosity = new Float32Array\\(MAX_ELEMENTS\\);\\\\n  const friction = new Float32Array\\(MAX_ELEMENTS\\);\\\\n/' src/features/simulation/registry.ts)",
+      "Bash(BENCH_SCENE=powder npm run bench)"
+    ]
+  }
+}

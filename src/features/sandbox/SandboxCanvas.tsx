@@ -22,6 +22,9 @@ export function SandboxCanvas() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const { width: cw, height: ch } = useElementSize(containerRef);
   const brushSize = useSandboxStore((s) => s.brushSize);
+  const tool = useSandboxStore((s) => s.tool);
+  // Bomb and people tools place fixed-size things, so the cursor shows their footprint.
+  const cursorCells = tool === 'bomb' ? 5 : tool === 'people' ? 6 : brushSize;
 
   // Fill the container while keeping the 4:3 aspect; the backing store uses an integer
   // device-pixel scale so nearest-neighbour upscaling stays reasonably crisp.
@@ -46,7 +49,8 @@ export function SandboxCanvas() {
       engine,
       stats,
       isPaused: () => useSandboxStore.getState().paused,
-      render: () => renderer.render(engine.grid, canvas, useSandboxStore.getState().viewMode),
+      render: () =>
+        renderer.render(engine.grid, canvas, useSandboxStore.getState().viewMode, engine.entities, engine.tickCount),
     });
     const timer = window.setInterval(publishStats, STATS_PUBLISH_MS);
     return () => {
@@ -83,7 +87,7 @@ export function SandboxCanvas() {
           ref={cursorRef}
           aria-hidden
           className="pointer-events-none absolute top-0 left-0 rounded-full border border-foreground/80 opacity-0 mix-blend-difference"
-          style={{ width: Math.max(4, brushSize * cellCss), height: Math.max(4, brushSize * cellCss) }}
+          style={{ width: Math.max(4, cursorCells * cellCss), height: Math.max(4, cursorCells * cellCss) }}
         />
       </div>
     </div>

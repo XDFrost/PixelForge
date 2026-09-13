@@ -20,6 +20,14 @@ export const Behavior = {
 } as const;
 export type Behavior = (typeof Behavior)[keyof typeof Behavior];
 
+/** What touching an element does to a living thing (see the entity layer). */
+export const Hazard = {
+  None: 0,
+  Burns: 1,
+  Corrodes: 2,
+} as const;
+export type Hazard = (typeof Hazard)[keyof typeof Hazard];
+
 /** Structure-of-arrays cell storage. Only grid.ts helpers should write to it. */
 export interface Grid {
   readonly width: number;
@@ -82,6 +90,8 @@ export interface UpdateCtx {
   move(from: number, to: number): void;
   swap(a: number, b: number): void;
   stamp(i: number): void;
+  /** Kill/knock entities within `r` of (cx, cy). Called by `blast()`. */
+  blastEntities(cx: number, cy: number, r: number): void;
 }
 
 /** Return true when the hook fully handled the cell this tick (skips the movement kernel). */
@@ -125,6 +135,8 @@ export interface ElementDef {
    */
   conductivity?: number;
   transitions?: Transitions;
+  /** Effect on living things that touch this element (default none). */
+  hazard?: 'burns' | 'corrodes';
   defaultTemp?: number;
   defaultLife?: number;
   update?: UpdateFn;
@@ -154,6 +166,8 @@ export interface CompiledRegistry {
   /** 0 when absent (temp < 0 is never true). */
   readonly transBelowTemp: Uint8Array;
   readonly transBelowTo: Uint8Array;
+  /** Hazard.* per element. */
+  readonly hazard: Uint8Array;
   /** 1 when the element appears on the left side of any reaction row. */
   readonly reactive: Uint8Array;
   /** Indexed by a * MAX_ELEMENTS + b. */
@@ -172,8 +186,10 @@ export interface StatsSnapshot {
   awakeChunks: number;
   totalChunks: number;
   tick: number;
+  /** Living humans in the entity layer. */
+  people: number;
 }
 
 export function createStatsSnapshot(): StatsSnapshot {
-  return { fps: 0, tickMs: 0, renderMs: 0, particles: 0, active: 0, awakeChunks: 0, totalChunks: 0, tick: 0 };
+  return { fps: 0, tickMs: 0, renderMs: 0, particles: 0, active: 0, awakeChunks: 0, totalChunks: 0, tick: 0, people: 0 };
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registry } from '@/features/elements';
+import { ENTITY_OPTIONS } from '@/features/elements/entityOptions';
 import { Engine } from '@/features/simulation/engine';
 import { statsSnapshot } from '@/features/stats/statsStore';
 import type { EngineHandle, SimulationHandle } from './EngineContext';
@@ -8,7 +9,7 @@ import { GRID_HEIGHT, GRID_WIDTH } from './config';
 /** Creates the engine exactly once for the lifetime of the sandbox. */
 export function useSimulationInstance(): SimulationHandle {
   const [sim] = useState<SimulationHandle>(() => {
-    const engine = new Engine({ width: GRID_WIDTH, height: GRID_HEIGHT, registry });
+    const engine = new Engine({ width: GRID_WIDTH, height: GRID_HEIGHT, registry, entityOptions: ENTITY_OPTIONS });
     const handle: EngineHandle = {
       width: GRID_WIDTH,
       height: GRID_HEIGHT,

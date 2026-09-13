@@ -46,6 +46,7 @@ export const fuse: ElementDef = {
   density: 160,
   friction: 1,
   defaultTemp: 255,
+  hazard: 'burns',
   conductivity: 0,
   defaultLife: FUSE_LIFE,
   update: updateFuse,

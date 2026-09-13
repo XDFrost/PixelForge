@@ -49,6 +49,7 @@ export const burningOil: ElementDef = {
   dispersion: 3,
   viscosity: 0.2,
   defaultTemp: 255,
+  hazard: 'burns',
   conductivity: 0,
   defaultLife: OIL_BURN_LIFE,
   update: updateBurningLiquid,

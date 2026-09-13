@@ -13,6 +13,8 @@ export interface BlastOptions {
   debrisLife?: number;
   /** Chance at the centre that a maskable cell is pulverised; falls off toward the rim. */
   pDestroy?: number;
+  /** Radius within which entities (people, other bombs) are affected. Defaults to the blast radius. */
+  entityRadius?: number;
 }
 
 /**
@@ -63,4 +65,6 @@ export function blast(ctx: UpdateCtx, cx: number, cy: number, radius: number, op
 
     temp[i] = 255;
   }
+
+  ctx.blastEntities(cx, cy, opts.entityRadius ?? radius);
 }

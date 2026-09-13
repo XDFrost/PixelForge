@@ -51,8 +51,8 @@ export const obsidian: ElementDef = {
   colors: ['#655d80', '#554e6c', '#746c94', '#857dab'],
   behavior: Behavior.Static,
   density: 255,
-  // Born hot and conductive: glows in the heat view, then cools toward ambient.
-  defaultTemp: 200,
+  // Warm at birth (a fresh crust glows in the heat view) but below the ignition temperature of people, plants and wood.
+  defaultTemp: 120,
   conductivity: 128,
   defaultLife: 0,
   update: updateObsidian,

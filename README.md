@@ -23,6 +23,8 @@ Heat is a real field: it diffuses through solids and liquids, and elements chang
 | Ice | Freezes a bounded sheet into adjacent still water; melts near heat |
 | Gunpowder + flame | Lights a fuse that races along the trail and blasts: empty cells catch fire, sand/plant/wood/stone blow into smoke, water flashes to steam, obsidian survives |
 | Heat view (`H`) | Renders every cell by temperature on a cold → hot gradient |
+| Humans (`P`) | 2×5-cell people who walk, climb single steps, hop small gaps, swim and tread water. They burn on contact with lava, fire or embers (and set wood and plants alight while panicking), dissolve in acid, suffocate when buried, drown under a ceiling, and die in blasts |
+| Bomb (`B`) | Drops a 5×5 bomb that falls, blinks for two seconds, then blasts a 22-cell radius: everything (obsidian included) turns to smoke, empty cells catch fire, and people within 26 cells die |
 
 ## Run
 
@@ -47,8 +49,10 @@ Requires Node 20.19+ or 22.x. Vite is pinned to v6 because Vite 7/8 need Node �
 | `.` | Step one tick (pauses) |
 | `[` / `]` | Brush size |
 | `1`–`9` | Select element |
-| `E` | Toggle eraser |
+| `E` | Toggle eraser (also removes people and bombs) |
 | `H` | Toggle heat view |
+| `B` | Bomb tool: click to drop a bomb |
+| `P` | Humans tool: click or drag to place people |
 | `C` | Clear |
 
 ## Architecture
@@ -59,7 +63,8 @@ Feature-based layout under `src/`:
 app/                 App shell and global styles
 shared/              ui (shadcn), lib (rng, geometry, colour), hooks
 features/
-  simulation/        Engine: SoA grid, tick loop, liquid/powder/gas/reaction/heat/transition kernels, blast helper, command queue. No React.
+  simulation/        Engine: SoA grid, tick loop, liquid/powder/gas/reaction/heat/transition kernels, blast helper, command queue,
+                     entity layer (people and bombs living on top of the grid). No React.
   elements/          Element definitions (data + optional update hook), reaction table, ids.
   renderer/          Palette, heat LUT + ImageData blitter.
   brush/             Pointer painting, keyboard shortcuts, brush-size control.
@@ -87,4 +92,4 @@ UI features talk to the engine only through `EngineContext`.
 ## Roadmap
 
 - **Phase 4** Chunked "awake" regions, Web Worker + OffscreenCanvas.
-- **Phase 5** Bomb tool, demo scenes, stress test, save/load.
+- **Phase 5** Demo scenes, stress test, save/load.

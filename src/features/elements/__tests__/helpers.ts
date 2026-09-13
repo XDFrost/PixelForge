@@ -1,10 +1,12 @@
 import { Engine } from '@/features/simulation/engine';
+import type { Bomb, Human } from '@/features/simulation/entities';
 import { countOf } from '@/features/simulation/grid';
 import { EMPTY } from '@/features/simulation/types';
+import { ENTITY_OPTIONS } from '../entityOptions';
 import { registry } from '../index';
 
 export function makeEngine(width = 16, height = 16, seed = 1): Engine {
-  return new Engine({ width, height, registry, seed });
+  return new Engine({ width, height, registry, seed, entityOptions: ENTITY_OPTIONS });
 }
 
 export function place(engine: Engine, x: number, y: number, id: number, life?: number): void {
@@ -43,3 +45,17 @@ export function positionsOf(engine: Engine, id: number): Array<[number, number]>
   }
   return out;
 }
+
+export function spawnHuman(engine: Engine, x: number, y: number): Human {
+  const h = engine.entities.spawnHuman(engine, x, y);
+  if (!h) throw new Error(`could not place a human at ${x},${y}`);
+  return h;
+}
+
+export function spawnBomb(engine: Engine, x: number, y: number): Bomb {
+  const b = engine.entities.spawnBomb(engine, x, y);
+  if (!b) throw new Error(`could not place a bomb at ${x},${y}`);
+  return b;
+}
+
+export const humans = (engine: Engine): readonly Human[] => engine.entities.humans;

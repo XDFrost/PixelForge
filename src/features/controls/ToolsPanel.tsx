@@ -1,4 +1,4 @@
-import { Eraser, Thermometer, type LucideIcon } from 'lucide-react';
+import { Bomb, Eraser, PersonStanding, Thermometer, type LucideIcon } from 'lucide-react';
 import { HEAT_STOPS } from '@/features/sandbox/config';
 import { useSandboxStore } from '@/features/sandbox/sandboxStore';
 import { cn } from '@/shared/lib/utils';
@@ -54,6 +54,7 @@ export function ToolsPanel({ label = '03 / Tools' }: ToolsPanelProps) {
   const tool = useSandboxStore((s) => s.tool);
   const viewMode = useSandboxStore((s) => s.viewMode);
   const toggleEraser = useSandboxStore((s) => s.toggleEraser);
+  const toggleTool = useSandboxStore((s) => s.toggleTool);
   const toggleHeatView = useSandboxStore((s) => s.toggleHeatView);
   const heat = viewMode === 'heat';
 
@@ -63,6 +64,14 @@ export function ToolsPanel({ label = '03 / Tools' }: ToolsPanelProps) {
       <div className="grid grid-cols-2 gap-2">
         <ToolTile icon={Eraser} label="Eraser" title="Eraser (E)" active={tool === 'erase'} onToggle={toggleEraser} />
         <ToolTile icon={Thermometer} label="Heat view" title="Heat view (H)" active={heat} onToggle={toggleHeatView} />
+        <ToolTile icon={Bomb} label="Bomb" title="Bomb (B)" active={tool === 'bomb'} onToggle={() => toggleTool('bomb')} />
+        <ToolTile
+          icon={PersonStanding}
+          label="Humans"
+          title="Humans (P)"
+          active={tool === 'people'}
+          onToggle={() => toggleTool('people')}
+        />
       </div>
       {heat && <HeatLegend />}
     </section>

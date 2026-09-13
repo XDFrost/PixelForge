@@ -16,6 +16,7 @@ export const burningWood: ElementDef = {
   behavior: Behavior.Static,
   density: 255,
   defaultTemp: 255,
+  hazard: 'burns',
   conductivity: 0,
   defaultLife: WOOD_BURN_LIFE,
   update: createEmberUpdate({ pFlame: 0.12, pSmoke: 0.15, spentSmokeLife: 120 }),

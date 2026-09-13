@@ -10,4 +10,5 @@ export const lava: ElementDef = {
   dispersion: 1,
   viscosity: 0.85,
   defaultTemp: 255,
+  hazard: 'burns',
 };

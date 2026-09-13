@@ -10,6 +10,7 @@ export const SHORTCUT_HINTS: ReadonlyArray<{ keys: string; action: string }> = [
   { keys: 'SPACE', action: 'Pause' },
   { keys: '[ ]', action: 'Brush' },
   { keys: 'H', action: 'Heat view' },
+  { keys: 'B / P', action: 'Bomb / Humans' },
 ];
 
 /** Binds the sandbox keyboard shortcuts for as long as the component is mounted. */
@@ -29,6 +30,10 @@ export function useSandboxShortcuts(engine: EngineHandle): void {
     E: () => useSandboxStore.getState().toggleEraser(),
     h: () => useSandboxStore.getState().toggleHeatView(),
     H: () => useSandboxStore.getState().toggleHeatView(),
+    b: () => useSandboxStore.getState().toggleTool('bomb'),
+    B: () => useSandboxStore.getState().toggleTool('bomb'),
+    p: () => useSandboxStore.getState().toggleTool('people'),
+    P: () => useSandboxStore.getState().toggleTool('people'),
   };
   PALETTE_ELEMENTS.forEach((def, i) => {
     if (i < 9) map[String(i + 1)] = () => useSandboxStore.getState().selectElement(def.id);

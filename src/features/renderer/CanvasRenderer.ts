@@ -1,4 +1,6 @@
+import type { EntityWorld } from '@/features/simulation/entities';
 import type { CompiledRegistry, Grid } from '@/features/simulation/types';
+import { drawEntities } from './entities';
 import type { HeatLut } from './heatLut';
 import { VARIANTS, type Palette } from './palette';
 
@@ -67,9 +69,10 @@ export class CanvasRenderer {
     this.px = new Uint32Array(this.image.data.buffer);
   }
 
-  render(grid: Grid, target: HTMLCanvasElement, mode: ViewMode = 'normal'): void {
+  render(grid: Grid, target: HTMLCanvasElement, mode: ViewMode = 'normal', entities?: EntityWorld, tick = 0): void {
     if (mode === 'heat') fillHeatPixels(grid, this.heatLut, this.px);
     else fillPixels(grid, this.palette, this.registry, this.px);
+    if (entities) drawEntities(this.px, this.width, this.height, entities, mode === 'heat', tick);
     this.bctx.putImageData(this.image, 0, 0);
     const tctx = target.getContext('2d', { alpha: false });
     if (!tctx) return;

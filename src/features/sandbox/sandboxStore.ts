@@ -4,7 +4,8 @@ import type { ViewMode } from '@/features/renderer/CanvasRenderer';
 import { clamp } from '@/shared/lib/geometry';
 import { BRUSH_DEFAULT, BRUSH_MAX, BRUSH_MIN } from './config';
 
-export type Tool = 'draw' | 'erase';
+/** draw/erase use the brush; bomb and people place entities on click. */
+export type Tool = 'draw' | 'erase' | 'bomb' | 'people';
 export type { ViewMode };
 
 export interface SandboxState {
@@ -20,6 +21,8 @@ export interface SandboxState {
   setPaused: (paused: boolean) => void;
   togglePaused: () => void;
   setTool: (tool: Tool) => void;
+  /** Select `tool`, or go back to drawing if it is already active. */
+  toggleTool: (tool: Tool) => void;
   toggleEraser: () => void;
   setViewMode: (mode: ViewMode) => void;
   toggleHeatView: () => void;
@@ -42,6 +45,7 @@ export const useSandboxStore = create<SandboxState>((set) => ({
   setPaused: (paused) => set({ paused }),
   togglePaused: () => set((s) => ({ paused: !s.paused })),
   setTool: (tool) => set({ tool }),
+  toggleTool: (tool) => set((s) => ({ tool: s.tool === tool ? 'draw' : tool })),
   toggleEraser: () => set((s) => ({ tool: s.tool === 'erase' ? 'draw' : 'erase' })),
   setViewMode: (viewMode) => set({ viewMode }),
   toggleHeatView: () => set((s) => ({ viewMode: s.viewMode === 'heat' ? 'normal' : 'heat' })),

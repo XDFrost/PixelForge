@@ -1,5 +1,6 @@
 import {
   EMPTY,
+  Hazard,
   KEEP,
   MAX_ELEMENTS,
   type CompiledRegistry,
@@ -35,6 +36,7 @@ export function compileRegistry(defs: readonly ElementDef[], rules: readonly Rea
   const transAboveTo = new Uint8Array(MAX_ELEMENTS);
   const transBelowTemp = new Uint8Array(MAX_ELEMENTS); // 0 = never
   const transBelowTo = new Uint8Array(MAX_ELEMENTS);
+  const hazard = new Uint8Array(MAX_ELEMENTS);
 
   for (const def of defs) {
     const { id } = def;
@@ -60,6 +62,7 @@ export function compileRegistry(defs: readonly ElementDef[], rules: readonly Rea
     conductivity[id] = cond;
     defaultTemp[id] = clampByte(def.defaultTemp ?? 20);
     defaultLife[id] = clampByte(def.defaultLife ?? 0);
+    hazard[id] = def.hazard === 'burns' ? Hazard.Burns : def.hazard === 'corrodes' ? Hazard.Corrodes : Hazard.None;
     if (def.update) {
       hasUpdate[id] = 1;
       updateFns[id] = def.update;
@@ -144,6 +147,7 @@ export function compileRegistry(defs: readonly ElementDef[], rules: readonly Rea
     transAboveTo,
     transBelowTemp,
     transBelowTo,
+    hazard,
     reactive,
     reactions,
   };

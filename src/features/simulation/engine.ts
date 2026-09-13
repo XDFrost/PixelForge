@@ -1,5 +1,6 @@
 import { mulberry32, randomSeed, type Rng } from '@/shared/lib/rng';
 import { applyCommand, type Command } from './commands';
+import { EntityWorld, type EntityOptions } from './entities';
 import { clearCell, clearGrid, createGrid, moveCell, setCell, swapCells } from './grid';
 import { updateGas } from './rules/gas';
 import { HEAT_EVERY, diffuseHeat } from './rules/heat';
@@ -16,6 +17,8 @@ export interface EngineOptions {
   /** Seed for the internal PRNG. Fixed seeds make runs reproducible. */
   seed?: number;
   rng?: Rng;
+  /** Element ids and blast parameters for people and bombs (injected from the elements layer). */
+  entityOptions?: EntityOptions;
 }
 
 /**
@@ -28,6 +31,8 @@ export class Engine implements UpdateCtx {
   readonly height: number;
   readonly registry: CompiledRegistry;
   readonly rng: Rng;
+  /** People and bombs living on top of the grid. */
+  readonly entities: EntityWorld;
   parity = 0;
 
   /** Number of ticks executed since creation / last clear. */
@@ -51,6 +56,7 @@ export class Engine implements UpdateCtx {
     this.grid = createGrid(opts.width, opts.height);
     this.registry = opts.registry;
     this.rng = opts.rng ?? mulberry32(opts.seed ?? randomSeed());
+    this.entities = new EntityWorld(opts.entityOptions);
     this.scratch = new Uint8Array(this.grid.size);
     this.rowTop = this.height;
     this.rowBottom = -1;
@@ -91,7 +97,23 @@ export class Engine implements UpdateCtx {
     this.grid.updated[i] = this.parity;
   }
 
+  blastEntities(cx: number, cy: number, r: number): void {
+    this.entities.applyBlast(cx, cy, r, this.rng);
+  }
+
   // ---- Commands ------------------------------------------------------------
+
+  spawnHuman(x: number, y: number): void {
+    this.entities.spawnHuman(this, x, y);
+  }
+
+  spawnBomb(x: number, y: number): void {
+    this.entities.spawnBomb(this, x, y);
+  }
+
+  eraseEntities(cx: number, cy: number, radius: number): void {
+    this.entities.removeInCircle(cx, cy, radius);
+  }
 
   enqueue(cmd: Command): void {
     this.queue.push(cmd);
@@ -111,6 +133,7 @@ export class Engine implements UpdateCtx {
 
   clearAll(): void {
     clearGrid(this.grid);
+    this.entities.clear();
     this.particles = 0;
     this.active = 0;
     this.rowTop = this.height;
@@ -215,5 +238,8 @@ export class Engine implements UpdateCtx {
     this.active = active;
     this.rowTop = top;
     this.rowBottom = bottom;
+
+    // Entities react to the settled grid. Early-outs when there are none.
+    this.entities.tick(this, tickNo);
   }
 }

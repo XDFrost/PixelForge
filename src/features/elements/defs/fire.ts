@@ -14,6 +14,7 @@ export const fire: ElementDef = {
   behavior: Behavior.Gas,
   density: 1,
   defaultTemp: 255,
+  hazard: 'burns',
   conductivity: 0,
   defaultLife: FIRE_LIFE,
   lifeEnd: EMPTY,

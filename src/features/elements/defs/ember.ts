@@ -58,6 +58,7 @@ export const ember: ElementDef = {
   behavior: Behavior.Static,
   density: 255,
   defaultTemp: 255,
+  hazard: 'burns',
   conductivity: 0,
   defaultLife: EMBER_LIFE,
   update: createEmberUpdate({ pFlame: 0.25, pSmoke: 0.12, spentSmokeLife: 120 }),

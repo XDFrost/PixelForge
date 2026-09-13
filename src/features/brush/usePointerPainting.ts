@@ -23,16 +23,23 @@ export interface PointerPaintingOptions {
 
 interface Stroke {
   pointerId: number;
+  /** paint = brush strokes; people = drop a person every few cells; none = single placement, ignore drags. */
+  kind: 'paint' | 'people' | 'none';
   mode: PaintMode;
   element: number;
   radius: number;
   fill: number;
   lastX: number;
   lastY: number;
+  /** Cells travelled since the last person was dropped. */
+  travelled: number;
 }
 
 /** Brush radius in cells for a given brush size (diameter in cells). */
 export const radiusForSize = (size: number): number => Math.max(0, Math.floor(size / 2));
+
+/** Cells of drag between people when placing a crowd. */
+export const PEOPLE_SPACING = 6;
 
 /**
  * Turns pointer gestures on the canvas into PaintCommands.
@@ -74,18 +81,23 @@ export function usePointerPainting({ canvasRef, engine, onHover }: PointerPainti
       const def = elementById(selectedElement);
       const fill = def?.behavior === Behavior.Liquid || def?.behavior === Behavior.Powder ? 0.5 : 1;
       const [gx, gy] = toGrid(e.clientX, e.clientY);
+      const kind: Stroke['kind'] = erase ? 'paint' : tool === 'bomb' ? 'none' : tool === 'people' ? 'people' : 'paint';
       const stroke: Stroke = {
         pointerId: e.pointerId,
+        kind,
         mode,
         element: selectedElement,
         radius: radiusForSize(brushSize),
         fill,
         lastX: gx,
         lastY: gy,
+        travelled: 0,
       };
       strokeRef.current = stroke;
       e.currentTarget.setPointerCapture(e.pointerId);
-      engine.enqueue({ type: 'paint', element: stroke.element, points: [gx, gy], radius: stroke.radius, mode, fill });
+      if (kind === 'none') engine.enqueue({ type: 'spawnBomb', x: gx, y: gy });
+      else if (kind === 'people') engine.enqueue({ type: 'spawnHuman', x: gx, y: gy });
+      else engine.enqueue({ type: 'paint', element: stroke.element, points: [gx, gy], radius: stroke.radius, mode, fill });
       reportHover(e);
     },
     [engine, toGrid, reportHover],
@@ -95,7 +107,7 @@ export function usePointerPainting({ canvasRef, engine, onHover }: PointerPainti
     (e: ReactPointerEvent<HTMLCanvasElement>) => {
       reportHover(e);
       const stroke = strokeRef.current;
-      if (!stroke || stroke.pointerId !== e.pointerId) return;
+      if (!stroke || stroke.pointerId !== e.pointerId || stroke.kind === 'none') return;
 
       const native = e.nativeEvent;
       const samples: Array<{ clientX: number; clientY: number }> =
@@ -109,7 +121,14 @@ export function usePointerPainting({ canvasRef, engine, onHover }: PointerPainti
         if (gx === stroke.lastX && gy === stroke.lastY) continue;
         bresenham(stroke.lastX, stroke.lastY, gx, gy, (x, y) => {
           if (x === stroke.lastX && y === stroke.lastY) return;
-          points.push(x, y);
+          if (stroke.kind === 'people') {
+            if (++stroke.travelled >= PEOPLE_SPACING) {
+              stroke.travelled = 0;
+              engine.enqueue({ type: 'spawnHuman', x, y });
+            }
+          } else {
+            points.push(x, y);
+          }
         });
         stroke.lastX = gx;
         stroke.lastY = gy;

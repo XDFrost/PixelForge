@@ -19,7 +19,19 @@ export interface ClearCommand {
   type: 'clear';
 }
 
-export type Command = PaintCommand | ClearCommand;
+export interface SpawnHumanCommand {
+  type: 'spawnHuman';
+  x: number;
+  y: number;
+}
+
+export interface SpawnBombCommand {
+  type: 'spawnBomb';
+  x: number;
+  y: number;
+}
+
+export type Command = PaintCommand | ClearCommand | SpawnHumanCommand | SpawnBombCommand;
 
 export interface CommandTarget {
   readonly grid: Grid;
@@ -27,13 +39,29 @@ export interface CommandTarget {
   clear(i: number): void;
   clearAll(): void;
   random(): number;
+  spawnHuman(x: number, y: number): void;
+  spawnBomb(x: number, y: number): void;
+  /** Remove entities touching the circle (eraser). */
+  eraseEntities(cx: number, cy: number, radius: number): void;
 }
 
 export function applyCommand(target: CommandTarget, cmd: Command): void {
-  if (cmd.type === 'clear') {
-    target.clearAll();
-    return;
+  switch (cmd.type) {
+    case 'clear':
+      target.clearAll();
+      return;
+    case 'spawnHuman':
+      target.spawnHuman(cmd.x, cmd.y);
+      return;
+    case 'spawnBomb':
+      target.spawnBomb(cmd.x, cmd.y);
+      return;
+    case 'paint':
+      applyPaint(target, cmd);
   }
+}
+
+function applyPaint(target: CommandTarget, cmd: PaintCommand): void {
   const { grid } = target;
   const { width, height } = grid;
   const offsets = circleOffsets(cmd.radius);
@@ -43,6 +71,7 @@ export function applyCommand(target: CommandTarget, cmd: Command): void {
   for (let p = 0; p + 1 < pts.length; p += 2) {
     const cx = pts[p];
     const cy = pts[p + 1];
+    if (cmd.mode === 'erase') target.eraseEntities(cx, cy, cmd.radius);
     for (let k = 0; k < offsets.length; k += 2) {
       const x = cx + offsets[k];
       const y = cy + offsets[k + 1];

@@ -20,6 +20,7 @@ export function StatsBar() {
       <Stat value={fmtInt.format(s.particles)} unit="PARTICLES" />
       <Stat value={s.tickMs.toFixed(1)} unit="MS / TICK" />
       <Stat value={fmtInt.format(s.active)} unit="ACTIVE" />
+      <Stat value={fmtInt.format(s.people)} unit="HUMANS" />
 
       <span className="ml-auto hidden items-center gap-4 lg:flex">
         {SHORTCUT_HINTS.map((h) => (

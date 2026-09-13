@@ -80,6 +80,7 @@ export function startLoop(opts: LoopOptions): LoopHandle {
     stats.particles = engine.particles;
     stats.active = engine.active;
     stats.tick = engine.tickCount;
+    stats.people = engine.entities.humanCount;
 
     handle = raf(frame);
   };

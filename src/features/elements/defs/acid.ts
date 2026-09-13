@@ -17,6 +17,7 @@ export const acid: ElementDef = {
   dispersion: 4,
   viscosity: 0.1,
   defaultTemp: 20,
+  hazard: 'corrodes',
   conductivity: 64,
   transitions: { above: [ACID_BOIL_TEMP, ElementId.Smoke] },
 };
